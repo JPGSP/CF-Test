@@ -1,62 +1,97 @@
-# CodeIgniter 4 Application Starter
+# CF-Test
 
-## What is CodeIgniter?
+This project will show you a form where you can see a list of users and also create, update and delete users.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## System requirements
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+ - PHP 8.1 or above.
+ - Git.
+ - Composer.
+ - Docker.
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Download the source code:
 
-The user guide corresponding to the latest version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/).
+Go to the folder where you have all your projects:
 
-## Installation & updates
+```bash
+cd /path/to/projects/folder/
+```
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+Then clone the Git Repository:
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+```bash
+git clone https://github.com/JPGSP/cf-test.git
+```
+
+Once the previous process has finished a new folder ```cf-test``` will be created.
+
+## Installation
+
+- Docker
+
+Go to your project folder:
+
+```bash
+cd /path/to/projects/folder/cf-test
+```
+
+Write the following command:
+
+```bash
+docker-compose run php composer install --ignore-platform-reqs && docker-compose up -d
+```
+
+- No Docker.
+
+Go to your project folder:
+
+```bash
+cd /path/to/projects/folder/cf-test
+```
+
+Write the following command:
+
+```bash
+composer install
+```
 
 ## Setup
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+1. Copy `env` to `.env` and put the values for the database variables
 
-## Important Change with index.php
+```bash
+DB_USER = 
+DB_PWD = 
+DB_NAME = 
+DB_PORT = 
+DB_HOST = 
+```
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+2. Run the migration
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+```bash
+php spark migrate
+```
 
-**Please** read the user guide for a better explanation of how CI4 works!
+3. Run the seeder
 
-## Repository Management
+```bash
+php spark db:seed UsersSeeder
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+4. Run the server
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```bash
+php spark server
+```
 
-## Server Requirements
+<img width="1430" alt="Screenshot 2023-04-11 at 11 08 51" src="https://user-images.githubusercontent.com/31289182/231146962-949f3723-401c-4738-9662-949a60222d65.png">
 
-PHP version 7.4 or higher is required, with the following extensions installed:
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+## Next?
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+- Refactor
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+Decouple models from the controllers (use services).
+Add validation on the forms.
+Add test units.
