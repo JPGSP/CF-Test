@@ -50,6 +50,7 @@
                 <td><?php echo $row['password']; ?></td>
                 <td><?php echo $row['mobile']; ?></td>
                 <td>
+                    <a data-id="<?php echo $row['id']; ?>" class="btn btn-primary btnEdit">Edit</a>
                     <a data-id="<?php echo $row['id']; ?>" class="btn btn-danger btnDelete">Delete</a>
                 </td>
             </tr>
@@ -111,6 +112,62 @@
             </div>
         </div>
     </div>
+    <!-- Update user html -->
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Update User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="updateUser" name="updateUser" action="<?php
+                echo base_url('user/update');?>"
+                      method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="hdnStudentId" id="hdnStudentId"/>
+                        <div class="form-group">
+                            <label for="txtFirstName">First Name:</label>
+                            <input type="text" class="form-control" id="txtFirstName" placeholder="Enter First Name" name="txtFirstName">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtLastName">Last Name:</label>
+                            <input type="text" class="form-control" id="txtLastName" placeholder="Enter Last Name" name="txtLastName">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtUsername">Username:</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="txtUsername"
+                                   placeholder="Enter User Name"
+                                   name="txtUsername">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtEmail">Email:</label>
+                            <input type="text" class="form-control"
+                                   id="txtEmail" placeholder="Enter Email"
+                                   name="txtEmail">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtPwd">Pwd:</label>
+                            <input type="text" class="form-control"
+                                   id="txtPwd" placeholder="Enter Password"
+                                   name="txtPwd">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtMobile">Mobile:</label>
+                            <input type="text" class="form-control"
+                                   id="txtMobile" placeholder="Enter Mobile"
+                                   name="txtMobile">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -138,7 +195,7 @@
                         user += '<td>' + res.data.password + '</td>';
                         user += '<td>' + res.data.mobile + '</td>';
                         user += '<td><a data-id="' + res.data.id + '" ' +
-                            '" class="btn btn-danger btnDelete">Delete</a></td>';
+                            'class="btn btn-primary btnEdit">Edit</a> <a data-id="' + res.data.id + '" class="btn btn-danger btnDelete">Delete</a></td>';
                         user += '</tr>';
                         $('#userTable tbody').prepend(user);
                         $('#addUser')[0].reset();
@@ -146,6 +203,51 @@
                     },
                     error: function (data) {
                         console.log(data);
+                    }
+                });
+            }
+        });
+        //EDIT ACTION
+        $('body').on('click', '.btnEdit', function () {
+            var user_id = $(this).attr('data-id');
+            $.ajax({
+                url: 'user/edit/'+user_id,
+                type: "GET",
+                dataType: 'json',
+                success: function (res) {
+                    $('#updateModal').modal('show');
+                    $('#updateUser #hdnStudentId').val(res.data.id);
+                    $('#updateUser #txtFirstName').val(res.data.firstname);
+                    $('#updateUser #txtLastName').val(res.data.lastname);
+                    $('#updateUser #txtUsername').val(res.data.username);
+                    $('#updateUser #txtEmail').val(res.data.email);
+                    $('#updateUser #txtPwd').val(res.data.password);
+                    $('#updateUser #txtMobile').val(res.data.mobile);
+                },
+                error: function (data) {
+                    console.log("Error Edit: ", data);
+                }
+            });
+        });
+        //Submit form
+        $("#updateUser").validate({
+            submitHandler: function(form) {
+                var form_action = $("#updateUser").attr("action");
+                $.ajax({
+                    data: $('#updateUser').serialize(),
+                    url: form_action,
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (res) {
+                        console.log("Vamos", res);
+                        // $('#studentTable tbody #'+ res.data.id).html(student);
+                        // $('#studentTable tbody').prepend(student);
+                        $('#updateUser')[0].reset();
+                        $('#updateModal').modal('hide');
+                        location.reload(true);
+                    },
+                    error: function (data) {
+                        console.log("Error Update: ", data);
                     }
                 });
             }
