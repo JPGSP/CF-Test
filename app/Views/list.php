@@ -44,6 +44,9 @@
                 <td><?php echo $row['email']; ?></td>
                 <td><?php echo $row['password']; ?></td>
                 <td><?php echo $row['mobile']; ?></td>
+                <td>
+                    <a data-id="<?php echo $row['id']; ?>" class="btn btn-danger btnDelete">Delete</a>
+                </td>
             </tr>
             <?php
         }
@@ -57,6 +60,13 @@
         $('#userTable').DataTable({
             paging: false,
             searching: false
+        });
+        //DELETE ACTION
+        $('body').on('click', '.btnDelete', function () {
+            var user_id = $(this).attr('data-id');
+            $.get('user/delete/'+user_id, function (data) {
+                $('#userTable tbody #'+ user_id).remove();
+            })
         });
     });
 </script>
