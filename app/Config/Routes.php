@@ -31,6 +31,7 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'ListUsersController::index');
 $routes->get('user/delete/(:num)', 'DeleteUserController::index/$1');
+$routes->post('user/store', 'CreateUserController::index');
 
 /*
  * --------------------------------------------------------------------

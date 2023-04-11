@@ -17,6 +17,11 @@
         <div class="col-lg-10">
             <h2>CF Partners Test</h2>
         </div>
+        <div class="col-lg-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                +  User
+            </button>
+        </div>
     </div>
 
     <table class="table table-bordered table-striped" id="userTable">
@@ -53,6 +58,59 @@
         ?>
         </tbody>
     </table>
+    <!-- New user html-->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addUser" name="addUser" action="<?php echo
+                base_url('user/store');?>" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="txtFirstName">First Name:</label>
+                            <input type="text" class="form-control" id="txtFirstName" placeholder="Enter First Name" name="txtFirstName">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtLastName">Last Name:</label>
+                            <input type="text" class="form-control" id="txtLastName" placeholder="Enter Last Name" name="txtLastName">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtUsername">Username:</label>
+                            <input type="text" class="form-control"
+                                   id="txtUsername"
+                                   placeholder="Enter User Name"
+                                   name="txtUsername">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtEmail">Email:</label>
+                            <input type="text" class="form-control"
+                                   id="txtEmail" placeholder="Enter Email"
+                                   name="txtEmail">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtPwd">Pasword:</label>
+                            <input type="text" class="form-control"
+                                   id="txtPwd" placeholder="Enter Password"
+                                   name="txtPwd">
+                        </div>
+                        <div class="form-group">
+                            <label for="txtMobile">Mobile:</label>
+                            <input type="text" class="form-control"
+                                   id="txtMobile" placeholder="Enter Mobile"
+                                   name="txtMobile">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -60,6 +118,37 @@
         $('#userTable').DataTable({
             paging: false,
             searching: false
+        });
+        //CREATE ACTION
+        $("#addUser").validate({
+            submitHandler: function(form) {
+                var form_action = $("#addUser").attr("action");
+                $.ajax({
+                    data: $('#addUser').serialize(),
+                    url: form_action,
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (res) {
+                        var user = '<tr id="'+res.data.id+'">';
+                        user += '<td>' + res.data.id + '</td>';
+                        user += '<td>' + res.data.firstname + '</td>';
+                        user += '<td>' + res.data.lastname + '</td>';
+                        user += '<td>' + res.data.username + '</td>';
+                        user += '<td>' + res.data.email + '</td>';
+                        user += '<td>' + res.data.password + '</td>';
+                        user += '<td>' + res.data.mobile + '</td>';
+                        user += '<td><a data-id="' + res.data.id + '" ' +
+                            '" class="btn btn-danger btnDelete">Delete</a></td>';
+                        user += '</tr>';
+                        $('#userTable tbody').prepend(user);
+                        $('#addUser')[0].reset();
+                        $('#addModal').modal('hide');
+                    },
+                    error: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
         });
         //DELETE ACTION
         $('body').on('click', '.btnDelete', function () {
